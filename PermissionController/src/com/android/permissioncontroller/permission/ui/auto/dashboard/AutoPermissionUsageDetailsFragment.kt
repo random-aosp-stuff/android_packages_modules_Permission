@@ -56,7 +56,7 @@ class AutoPermissionUsageDetailsFragment : AutoSettingsFrameFragment(),
     companion object {
         private const val LOG_TAG = "AutoPermissionUsageDetailsFragment"
         private const val KEY_SESSION_ID = "_session_id"
-        private const val FILTER_24_HOURS = 2
+        private const val FILTER_7_DAYS = 1
 
         // Only show the last 24 hours on Auto right now
         private const val SHOW_7_DAYS = false
@@ -147,7 +147,7 @@ class AutoPermissionUsageDetailsFragment : AutoSettingsFrameFragment(),
      */
     private fun reloadData() {
         usageViewModel.loadPermissionUsages(
-            requireActivity().getLoaderManager(), permissionUsages, this, FILTER_24_HOURS)
+            requireActivity().getLoaderManager(), permissionUsages, this, FILTER_7_DAYS)
         if (finishedInitialLoad) {
             setLoading(true)
         }
