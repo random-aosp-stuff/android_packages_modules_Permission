@@ -34,6 +34,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.ListPreference
 import com.android.modules.utils.build.SdkLevel
 import com.android.permission.flags.Flags
 import com.android.permissioncontroller.R
@@ -60,10 +61,12 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
         app.getString(R.string.show_access_notifications_default_config)
     private val CONFIG_MIC_TOGGLE_ENABLED = app.getString(R.string.mic_toggle_enable_config)
     private val CONFIG_CAMERA_TOGGLE_ENABLED = app.getString(R.string.camera_toggle_enable_config)
+    private val CAMERA_OFF_TIMEOUT = "camera_off_timeout" // Settings.Secure.CAMERA_OFF_TIMEOUT
 
     enum class Pref(val key: String, @StringRes val titleResId: Int) {
         MIC("privacy_mic_toggle", R.string.mic_toggle_title),
         CAMERA("privacy_camera_toggle", R.string.camera_toggle_title),
+        CAMERA_TIMEOUT("privacy_camera_timeout", R.string.camera_timeout_title),
         LOCATION("privacy_location_access", R.string.location_settings),
         CLIPBOARD("show_clip_access_notification", R.string.show_clip_access_notification_title),
         SHOW_PASSWORD("show_password", R.string.show_password_title);
@@ -129,6 +132,7 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
             Pref.LOCATION -> goToLocation(fragment)
             Pref.CLIPBOARD -> toggleClipboard()
             Pref.SHOW_PASSWORD -> toggleShowPassword()
+            Pref.CAMERA_TIMEOUT -> {}
         }
     }
 
@@ -217,6 +221,45 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
 
     private fun shouldDisplayShowPasswordToggle(): Boolean {
         return app.resources.getBoolean(R.bool.config_display_show_password_toggle)
+    }
+
+    fun setSensorTimeout(preference: ListPreference) {
+        var sensorTimeout = ""
+        when (preference.getKey()) {
+            Pref.CAMERA_TIMEOUT.key -> sensorTimeout = CAMERA_OFF_TIMEOUT
+        }
+        setSensorTimeout(preference, Settings.Secure.getLong(app.contentResolver, sensorTimeout, 0))
+    }
+
+    fun setSensorTimeout(preference: ListPreference, timeout: Long): Boolean {
+        var sensorTimeout = ""
+        var timeoutDescription = -1
+        when (preference.getKey()) {
+            Pref.CAMERA_TIMEOUT.key -> {
+                sensorTimeout = CAMERA_OFF_TIMEOUT
+                timeoutDescription =
+                    if (timeout != 0L) R.string.camera_timeout_description
+                    else R.string.camera_timeout_description2
+            }
+        }
+        if (timeout == 0L) {
+            preference.setSummary(app.getString(timeoutDescription))
+        } else {
+            val values = preference.getEntryValues()
+            for (i in values.indices) {
+                if (timeout == values[i].toString().toLong()) {
+                    preference.setSummary(app.getString(timeoutDescription,
+                        preference.getEntries()[i]))
+                    break
+                }
+            }
+        }
+        preference.setValue(timeout.toString())
+        return Settings.Secure.putLong(
+            app.contentResolver,
+            sensorTimeout,
+            timeout
+        )
     }
 }
 
