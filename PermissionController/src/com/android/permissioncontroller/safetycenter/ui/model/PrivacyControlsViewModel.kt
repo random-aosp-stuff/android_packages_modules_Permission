@@ -62,9 +62,11 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
     private val CONFIG_MIC_TOGGLE_ENABLED = app.getString(R.string.mic_toggle_enable_config)
     private val CONFIG_CAMERA_TOGGLE_ENABLED = app.getString(R.string.camera_toggle_enable_config)
     private val CAMERA_OFF_TIMEOUT = "camera_off_timeout" // Settings.Secure.CAMERA_OFF_TIMEOUT
+    private val MIC_OFF_TIMEOUT = "mic_off_timeout" // Settings.Secure.MIC_OFF_TIMEOUT
 
     enum class Pref(val key: String, @StringRes val titleResId: Int) {
         MIC("privacy_mic_toggle", R.string.mic_toggle_title),
+        MIC_TIMEOUT("privacy_mic_timeout", R.string.mic_timeout_title),
         CAMERA("privacy_camera_toggle", R.string.camera_toggle_title),
         CAMERA_TIMEOUT("privacy_camera_timeout", R.string.camera_timeout_title),
         LOCATION("privacy_location_access", R.string.location_settings),
@@ -133,6 +135,7 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
             Pref.CLIPBOARD -> toggleClipboard()
             Pref.SHOW_PASSWORD -> toggleShowPassword()
             Pref.CAMERA_TIMEOUT -> {}
+            Pref.MIC_TIMEOUT -> {}
         }
     }
 
@@ -227,6 +230,7 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
         var sensorTimeout = ""
         when (preference.getKey()) {
             Pref.CAMERA_TIMEOUT.key -> sensorTimeout = CAMERA_OFF_TIMEOUT
+            Pref.MIC_TIMEOUT.key -> sensorTimeout = MIC_OFF_TIMEOUT
         }
         setSensorTimeout(preference, Settings.Secure.getLong(app.contentResolver, sensorTimeout, 0))
     }
@@ -240,6 +244,12 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
                 timeoutDescription =
                     if (timeout != 0L) R.string.camera_timeout_description
                     else R.string.camera_timeout_description2
+            }
+            Pref.MIC_TIMEOUT.key -> {
+                sensorTimeout = MIC_OFF_TIMEOUT
+                timeoutDescription =
+                    if (timeout != 0L) R.string.mic_timeout_description
+                    else R.string.mic_timeout_description2
             }
         }
         if (timeout == 0L) {
