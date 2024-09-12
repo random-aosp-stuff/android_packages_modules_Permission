@@ -22,6 +22,7 @@ import android.safetycenter.SafetyCenterEntryGroup
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.permissioncontroller.Constants.EXTRA_SESSION_ID
@@ -176,6 +177,18 @@ class PrivacySubpageFragment : SafetyCenterFragment() {
         locationEntry?.setOnPreferenceClickListener {
             privacyControlsViewModel.handlePrefClick(this, Pref.LOCATION, null)
             true
+        }
+
+        val timeoutEntries = listOf(Pref.CAMERA_TIMEOUT)
+        timeoutEntries.forEach { timeoutEntry ->
+            val timeoutPreference: ListPreference? = findPreference(timeoutEntry.key)
+            if (timeoutPreference != null) {
+                privacyControlsViewModel.setSensorTimeout(timeoutPreference)
+            }
+            timeoutPreference?.setOnPreferenceChangeListener { _, newValue ->
+                privacyControlsViewModel.setSensorTimeout(timeoutPreference,
+                    (newValue as String).toLong())
+            }
         }
     }
 
