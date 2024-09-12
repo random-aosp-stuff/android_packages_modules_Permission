@@ -76,7 +76,7 @@ public final class PrivacyControlsFragment extends PreferenceFragmentCompat {
                             return true;
                         });
 
-        for (Pref pref : List.of(Pref.CAMERA_TIMEOUT)) {
+        for (Pref pref : List.of(Pref.CAMERA_TIMEOUT, Pref.MIC_TIMEOUT)) {
             ListPreference sensorTimeout = findPreference(pref.getKey());
             mViewModel.setSensorTimeout(sensorTimeout);
             sensorTimeout.setOnPreferenceChangeListener(

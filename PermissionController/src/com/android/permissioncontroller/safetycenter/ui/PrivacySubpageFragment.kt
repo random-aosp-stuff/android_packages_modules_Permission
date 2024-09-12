@@ -179,7 +179,7 @@ class PrivacySubpageFragment : SafetyCenterFragment() {
             true
         }
 
-        val timeoutEntries = listOf(Pref.CAMERA_TIMEOUT)
+        val timeoutEntries = listOf(Pref.CAMERA_TIMEOUT, Pref.MIC_TIMEOUT)
         timeoutEntries.forEach { timeoutEntry ->
             val timeoutPreference: ListPreference? = findPreference(timeoutEntry.key)
             if (timeoutPreference != null) {

@@ -40,6 +40,14 @@
         android:title="@string/mic_toggle_title"
         android:summary="@string/mic_toggle_description"/>
 
+    <!-- Microphone timeout -->
+    <androidx.preference.ListPreference
+        android:key="privacy_mic_timeout"
+        android:title="@string/mic_timeout_title"
+        android:summary="@string/mic_timeout_description"
+        android:entries="@array/timeout_entries"
+        android:entryValues="@array/timeout_values" />
+
     <!-- Clipboard access notifications toggle -->
     <com.android.permissioncontroller.safetycenter.ui.ClickableDisabledSwitchPreference
         android:key="show_clip_access_notification"
