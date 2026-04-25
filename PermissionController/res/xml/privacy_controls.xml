@@ -48,6 +48,12 @@
         android:entries="@array/timeout_entries"
         android:entryValues="@array/timeout_values" />
 
+    <!-- Microphone lock screen unblock toggle -->
+    <com.android.permissioncontroller.safetycenter.ui.ClickableDisabledSwitchPreference
+        android:key="privacy_mic_unblock_dialog_when_locked"
+        android:title="@string/mic_unblock_dialog_when_locked_title"
+        android:summary="@string/mic_unblock_dialog_when_locked_summary" />
+
     <!-- Clipboard access notifications toggle -->
     <com.android.permissioncontroller.safetycenter.ui.ClickableDisabledSwitchPreference
         android:key="show_clip_access_notification"

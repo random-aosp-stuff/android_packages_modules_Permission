@@ -169,6 +169,7 @@ class PrivacySubpageFragment : SafetyCenterFragment() {
         }
 
         setSwitchPreference(Pref.MIC)
+        setSwitchPreference(Pref.MIC_UNBLOCK_DIALOG_WHEN_LOCKED)
         setSwitchPreference(Pref.CAMERA)
         setSwitchPreference(Pref.CLIPBOARD)
         setSwitchPreference(Pref.SHOW_PASSWORD)

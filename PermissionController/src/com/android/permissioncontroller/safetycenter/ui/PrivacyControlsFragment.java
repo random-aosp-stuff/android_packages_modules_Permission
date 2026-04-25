@@ -65,6 +65,7 @@ public final class PrivacyControlsFragment extends PreferenceFragmentCompat {
         }
 
         setSwitchPreference(prefStates, Pref.MIC);
+        setSwitchPreference(prefStates, Pref.MIC_UNBLOCK_DIALOG_WHEN_LOCKED);
         setSwitchPreference(prefStates, Pref.CAMERA);
         setSwitchPreference(prefStates, Pref.CLIPBOARD);
         setSwitchPreference(prefStates, Pref.SHOW_PASSWORD);

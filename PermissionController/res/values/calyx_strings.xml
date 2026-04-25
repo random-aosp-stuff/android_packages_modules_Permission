@@ -29,4 +29,9 @@
     <!-- Describes the mic timeout [CHAR LIMIT=NONE] -->
     <string name="mic_timeout_description">Microphone access will turn off after <xliff:g id="timeout_description">%1$s</xliff:g> if not in use</string>
     <string name="mic_timeout_description2">Microphone access will not turn off automatically</string>
+
+    <!-- Label for allowing the microphone unblock dialog on the lock screen [CHAR LIMIT=50] -->
+    <string name="mic_unblock_dialog_when_locked_title">Microphone unblock on lock screen</string>
+    <!-- Describes the microphone unblock dialog lock screen toggle [CHAR LIMIT=NONE] -->
+    <string name="mic_unblock_dialog_when_locked_summary">Allow the microphone unblock dialog to work on the lock screen without unlocking</string>
 </resources>

@@ -63,10 +63,16 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
     private val CONFIG_CAMERA_TOGGLE_ENABLED = app.getString(R.string.camera_toggle_enable_config)
     private val CAMERA_OFF_TIMEOUT = "camera_off_timeout" // Settings.Secure.CAMERA_OFF_TIMEOUT
     private val MIC_OFF_TIMEOUT = "mic_off_timeout" // Settings.Secure.MIC_OFF_TIMEOUT
+    private val MIC_UNBLOCK_DIALOG_WHEN_LOCKED_SETTING =
+        "mic_unblock_dialog_when_locked" // Settings.Secure.MIC_UNBLOCK_DIALOG_WHEN_LOCKED
 
     enum class Pref(val key: String, @StringRes val titleResId: Int) {
         MIC("privacy_mic_toggle", R.string.mic_toggle_title),
         MIC_TIMEOUT("privacy_mic_timeout", R.string.mic_timeout_title),
+        MIC_UNBLOCK_DIALOG_WHEN_LOCKED(
+            "privacy_mic_unblock_dialog_when_locked",
+            R.string.mic_unblock_dialog_when_locked_title
+        ),
         CAMERA("privacy_camera_toggle", R.string.camera_toggle_title),
         CAMERA_TIMEOUT("privacy_camera_timeout", R.string.camera_timeout_title),
         LOCATION("privacy_location_access", R.string.location_settings),
@@ -99,6 +105,8 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
                         UserManager.DISALLOW_MICROPHONE_TOGGLE,
                         CONFIG_MIC_TOGGLE_ENABLED
                     )
+                shownPrefs[Pref.MIC_UNBLOCK_DIALOG_WHEN_LOCKED] =
+                    getMicUnblockDialogWhenLockedState()
                 shownPrefs[Pref.CLIPBOARD] =
                     PrefState(visible = true, checked = isClipboardEnabled(), admin = null)
                 shownPrefs[Pref.SHOW_PASSWORD] =
@@ -134,6 +142,7 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
             Pref.LOCATION -> goToLocation(fragment)
             Pref.CLIPBOARD -> toggleClipboard()
             Pref.SHOW_PASSWORD -> toggleShowPassword()
+            Pref.MIC_UNBLOCK_DIALOG_WHEN_LOCKED -> toggleMicUnblockDialogWhenLocked()
             Pref.CAMERA_TIMEOUT -> {}
             Pref.MIC_TIMEOUT -> {}
         }
@@ -174,6 +183,43 @@ class PrivacyControlsViewModel(private val app: Application) : AndroidViewModel(
                     null
                 }
         )
+    }
+
+    private fun getMicUnblockDialogWhenLockedState(): PrefState {
+        val sensorConfigEnabled =
+            DeviceConfig.getBoolean(
+                DeviceConfig.NAMESPACE_PRIVACY,
+                CONFIG_MIC_TOGGLE_ENABLED,
+                true
+            )
+        return PrefState(
+            visible =
+                sensorConfigEnabled &&
+                    sensorPrivacyManager.supportsSensorToggle(Sensors.MICROPHONE),
+            checked = isMicUnblockDialogWhenLockedEnabled(),
+            admin = null
+        )
+    }
+
+    private fun isMicUnblockDialogWhenLockedEnabled(): Boolean {
+        return Settings.Secure.getInt(
+            app.contentResolver,
+            MIC_UNBLOCK_DIALOG_WHEN_LOCKED_SETTING,
+            0
+        ) != 0
+    }
+
+    private fun toggleMicUnblockDialogWhenLocked() {
+        val newState = if (isMicUnblockDialogWhenLockedEnabled()) 0 else 1
+        if (
+            Settings.Secure.putInt(
+                app.contentResolver,
+                MIC_UNBLOCK_DIALOG_WHEN_LOCKED_SETTING,
+                newState
+            )
+        ) {
+            controlStateLiveData.update()
+        }
     }
 
     private fun isClipboardEnabled(): Boolean {
